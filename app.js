@@ -167,7 +167,7 @@ form.addEventListener("submit", async (event) => {
           apikey: SUPABASE_KEY,
           Authorization: `Bearer ${SUPABASE_KEY}`,
           "Content-Type": "application/json",
-          Prefer: "resolution=merge-duplicates,return=minimal",
+          Prefer: "resolution=ignore-duplicates,return=minimal",
         },
         body: JSON.stringify({ available_on: selectedDate, name }),
       },
