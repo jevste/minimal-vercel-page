@@ -225,7 +225,7 @@ form.addEventListener("submit", async (event) => {
 refreshButton.addEventListener("click", () => loadAvailability());
 previousMonthButton.addEventListener("click", () => changeMonth(-1));
 nextMonthButton.addEventListener("click", () => changeMonth(1));
-window.setInterval(() => loadAvailability({ silent: true }), 15000);
+window.setInterval(() => loadAvailability({ silent: true }), 5000);
 
 updateMonthHeader();
 renderCalendar();
