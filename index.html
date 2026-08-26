@@ -3,15 +3,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Минимальная страница, опубликованная через Vercel." />
-    <title>Привет!</title>
+    <meta
+      name="description"
+      content="Общий календарь, в котором участники отмечают свободные дни."
+    />
+    <title>Календарь доступности</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
   </head>
   <body>
-    <main>
-      <p class="label">jevste · Vercel</p>
-      <h1>Привет, мир!</h1>
-      <p>Минимальная страница уже работает.</p>
+    <main class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Общий календарь</p>
+          <h1>Когда вы свободны?</h1>
+          <p class="intro">Выберите день, введите имя — и остальные сразу увидят вашу отметку.</p>
+        </div>
+        <div class="month-mark" aria-hidden="true">
+          <span id="month-number"></span>
+          <small id="year-number"></small>
+        </div>
+      </header>
+
+      <section class="calendar-card" aria-labelledby="calendar-title">
+        <div class="calendar-toolbar">
+          <div>
+            <p class="section-label">Текущий месяц</p>
+            <h2 id="calendar-title"></h2>
+          </div>
+          <button id="refresh-button" class="ghost-button" type="button">Обновить</button>
+        </div>
+
+        <div class="weekdays" aria-hidden="true">
+          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span>
+          <span>Пт</span><span>Сб</span><span>Вс</span>
+        </div>
+        <div id="calendar-grid" class="calendar-grid" aria-label="Дни текущего месяца"></div>
+      </section>
+
+      <aside class="booking-card" aria-labelledby="form-title">
+        <div>
+          <p class="section-label">Новая отметка</p>
+          <h2 id="form-title">Выберите день</h2>
+          <p id="selected-date-copy" class="selected-date-copy">Нажмите на дату в календаре.</p>
+        </div>
+
+        <form id="availability-form">
+          <label for="name-input">Ваше имя</label>
+          <div class="form-row">
+            <input
+              id="name-input"
+              name="name"
+              type="text"
+              maxlength="80"
+              autocomplete="name"
+              placeholder="Например, Анна"
+              required
+            />
+            <button id="submit-button" type="submit" disabled>Я свободен(на)</button>
+          </div>
+        </form>
+        <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+      </aside>
     </main>
   </body>
 </html>

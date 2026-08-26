@@ -1,8 +1,8 @@
 :root {
-  color-scheme: light dark;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  background: #0b0b0c;
-  color: #f5f5f5;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #18231c;
+  background: #eef2e9;
+  font-synthesis: none;
 }
 
 * {
@@ -12,30 +12,329 @@
 body {
   min-height: 100vh;
   margin: 0;
-  display: grid;
-  place-items: center;
-  padding: 2rem;
+  padding: clamp(1rem, 4vw, 3.5rem);
+  background:
+    radial-gradient(circle at 85% 10%, rgba(241, 172, 71, 0.24), transparent 28rem),
+    #eef2e9;
 }
 
-main {
-  width: min(100%, 42rem);
+button,
+input {
+  font: inherit;
 }
 
-.label {
-  color: #8b8b92;
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  width: min(100%, 72rem);
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.eyebrow,
+.section-label {
+  margin: 0 0 0.45rem;
+  color: #6c796f;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
-h1 {
-  margin: 0.5rem 0;
-  font-size: clamp(3rem, 10vw, 6rem);
-  line-height: 0.95;
-  letter-spacing: -0.06em;
+h1,
+h2,
+p {
+  margin-top: 0;
 }
 
-main > p:last-child {
-  color: #b8b8be;
-  font-size: 1.15rem;
+h1 {
+  max-width: 13ch;
+  margin-bottom: 0.75rem;
+  font-size: clamp(2.8rem, 8vw, 6.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.065em;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.intro {
+  max-width: 36rem;
+  margin-bottom: 0;
+  color: #5c675f;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.month-mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 7.5rem;
+  aspect-ratio: 1;
+  place-content: center;
+  border-radius: 50%;
+  background: #f1ac47;
+  text-align: center;
+  transform: rotate(5deg);
+}
+
+.month-mark span {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 0.9;
+}
+
+.month-mark small {
+  margin-top: 0.35rem;
+  font-weight: 700;
+}
+
+.calendar-card,
+.booking-card {
+  border: 1px solid rgba(24, 35, 28, 0.12);
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 1.4rem 4rem rgba(36, 58, 43, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.calendar-card {
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ghost-button {
+  border: 1px solid #cbd3cc;
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  color: #34463a;
+  background: transparent;
+  font-weight: 700;
+}
+
+.ghost-button:hover {
+  background: #edf2eb;
+}
+
+.weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.weekdays {
+  margin-bottom: 0.55rem;
+  color: #7c887f;
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.calendar-day,
+.calendar-spacer {
+  min-height: 7.2rem;
+  border-radius: 0.9rem;
+}
+
+.calendar-day {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.4rem;
+  border: 1px solid #d8ded8;
+  padding: 0.65rem;
+  overflow: hidden;
+  color: #1d2a21;
+  background: #fbfcfa;
+  text-align: left;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.calendar-day:hover {
+  border-color: #7c9b82;
+  transform: translateY(-2px);
+}
+
+.calendar-day.is-selected {
+  border-color: #294f34;
+  background: #e5efe6;
+  box-shadow: inset 0 0 0 1px #294f34;
+}
+
+.calendar-day.is-today .day-number {
+  display: grid;
+  width: 1.8rem;
+  height: 1.8rem;
+  place-items: center;
+  border-radius: 50%;
+  color: white;
+  background: #294f34;
+}
+
+.day-number {
+  font-weight: 800;
+}
+
+.people-list {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: auto;
+}
+
+.person-chip {
+  overflow: hidden;
+  border-radius: 999px;
+  padding: 0.22rem 0.45rem;
+  color: #734912;
+  background: #fff0d6;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.more-people {
+  color: #6f7a72;
+  font-size: 0.68rem;
+}
+
+.booking-card {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.8fr) minmax(18rem, 1.2fr);
+  gap: clamp(1.25rem, 4vw, 3rem);
+  margin-top: 1rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.selected-date-copy,
+.status-message {
+  margin: 0.45rem 0 0;
+  color: #68736b;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+input {
+  min-width: 0;
+  flex: 1 1 12rem;
+  border: 1px solid #cbd3cc;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  color: #18231c;
+  background: #fff;
+}
+
+input:focus {
+  border-color: #294f34;
+  outline: 3px solid rgba(41, 79, 52, 0.14);
+}
+
+.form-row button {
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.15rem;
+  color: #fff;
+  background: #294f34;
+  font-weight: 800;
+}
+
+.form-row button:hover:not(:disabled) {
+  background: #1d3c27;
+}
+
+.form-row button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.status-message {
+  grid-column: 2;
+  min-height: 1.4em;
+  font-size: 0.85rem;
+}
+
+.status-message.is-error {
+  color: #a1392d;
+}
+
+.status-message.is-success {
+  color: #27693a;
+}
+
+@media (max-width: 760px) {
+  body {
+    padding: 1rem;
+  }
+
+  .month-mark {
+    width: 5.2rem;
+  }
+
+  .month-mark span {
+    font-size: 2rem;
+  }
+
+  .calendar-card {
+    overflow-x: auto;
+  }
+
+  .weekdays,
+  .calendar-grid {
+    min-width: 42rem;
+  }
+
+  .booking-card {
+    grid-template-columns: 1fr;
+  }
+
+  .status-message {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero {
+    align-items: flex-start;
+  }
+
+  .month-mark {
+    display: none;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
 }
