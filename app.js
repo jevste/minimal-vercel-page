@@ -10,6 +10,7 @@ const monthEnd = new Date(currentYear, currentMonth + 1, 0);
 
 const calendarGrid = document.querySelector("#calendar-grid");
 const calendarTitle = document.querySelector("#calendar-title");
+const heroTitle = document.querySelector("#hero-title");
 const selectedDateCopy = document.querySelector("#selected-date-copy");
 const formTitle = document.querySelector("#form-title");
 const form = document.querySelector("#availability-form");
@@ -32,9 +33,15 @@ document.querySelector("#month-number").textContent = String(currentMonth + 1).p
 document.querySelector("#year-number").textContent = currentYear;
 calendarTitle.textContent = capitalize(monthFormatter.format(monthStart));
 nameInput.value = localStorage.getItem("availability-name") || "";
+updateHeroTitle();
 
 function capitalize(value) {
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function updateHeroTitle() {
+  const name = nameInput.value.trim();
+  heroTitle.textContent = name ? `Когда ты свободен, ${name}?` : "Когда ты свободен?";
 }
 
 function toDateKey(date) {
@@ -185,6 +192,7 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
+nameInput.addEventListener("input", updateHeroTitle);
 refreshButton.addEventListener("click", () => loadAvailability());
 window.setInterval(() => loadAvailability({ silent: true }), 15000);
 
