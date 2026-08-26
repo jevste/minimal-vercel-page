@@ -28,10 +28,14 @@
       <section class="calendar-card" aria-labelledby="calendar-title">
         <div class="calendar-toolbar">
           <div>
-            <p class="section-label">Текущий месяц</p>
+            <p class="section-label">Выбранный месяц</p>
             <h2 id="calendar-title"></h2>
           </div>
-          <button id="refresh-button" class="ghost-button" type="button">Обновить</button>
+          <div class="calendar-actions">
+            <button id="previous-month" class="icon-button" type="button" aria-label="Предыдущий месяц">←</button>
+            <button id="next-month" class="icon-button" type="button" aria-label="Следующий месяц">→</button>
+            <button id="refresh-button" class="ghost-button" type="button">Обновить</button>
+          </div>
         </div>
 
         <div class="weekdays" aria-hidden="true">

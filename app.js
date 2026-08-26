@@ -3,10 +3,7 @@ const SUPABASE_KEY = "sb_publishable_-zO3eqnHgePmPocjDsKjFw_IJbcv6q0";
 const TABLE_NAME = "availability";
 
 const now = new Date();
-const currentYear = now.getFullYear();
-const currentMonth = now.getMonth();
-const monthStart = new Date(currentYear, currentMonth, 1);
-const monthEnd = new Date(currentYear, currentMonth + 1, 0);
+let viewDate = new Date(now.getFullYear(), now.getMonth(), 1);
 
 const calendarGrid = document.querySelector("#calendar-grid");
 const calendarTitle = document.querySelector("#calendar-title");
@@ -16,21 +13,22 @@ const form = document.querySelector("#availability-form");
 const nameInput = document.querySelector("#name-input");
 const submitButton = document.querySelector("#submit-button");
 const refreshButton = document.querySelector("#refresh-button");
+const previousMonthButton = document.querySelector("#previous-month");
+const nextMonthButton = document.querySelector("#next-month");
 const statusMessage = document.querySelector("#status-message");
 
 let selectedDate = null;
 let availability = [];
+let loadRequestId = 0;
 
 const monthFormatter = new Intl.DateTimeFormat("ru-RU", { month: "long", year: "numeric" });
 const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
   weekday: "long",
   day: "numeric",
   month: "long",
+  year: "numeric",
 });
 
-document.querySelector("#month-number").textContent = String(currentMonth + 1).padStart(2, "0");
-document.querySelector("#year-number").textContent = currentYear;
-calendarTitle.textContent = capitalize(monthFormatter.format(monthStart));
 nameInput.value = localStorage.getItem("availability-name") || "";
 
 function capitalize(value) {
@@ -48,7 +46,23 @@ function namesForDate(dateKey) {
   return availability.filter((entry) => entry.available_on === dateKey).map((entry) => entry.name);
 }
 
+function getMonthBounds() {
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+  return {
+    start: new Date(year, month, 1),
+    end: new Date(year, month + 1, 0),
+  };
+}
+
+function updateMonthHeader() {
+  calendarTitle.textContent = capitalize(monthFormatter.format(viewDate));
+  document.querySelector("#month-number").textContent = String(viewDate.getMonth() + 1).padStart(2, "0");
+  document.querySelector("#year-number").textContent = viewDate.getFullYear();
+}
+
 function renderCalendar() {
+  const { start: monthStart, end: monthEnd } = getMonthBounds();
   calendarGrid.replaceChildren();
   const mondayOffset = (monthStart.getDay() + 6) % 7;
 
@@ -59,7 +73,7 @@ function renderCalendar() {
   }
 
   for (let day = 1; day <= monthEnd.getDate(); day += 1) {
-    const date = new Date(currentYear, currentMonth, day);
+    const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
     const dateKey = toDateKey(date);
     const names = namesForDate(dateKey);
     const button = document.createElement("button");
@@ -102,6 +116,18 @@ function renderCalendar() {
   }
 }
 
+function changeMonth(offset) {
+  viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + offset, 1);
+  selectedDate = null;
+  availability = [];
+  formTitle.textContent = "Выберите день";
+  selectedDateCopy.textContent = "Нажмите на дату в календаре.";
+  submitButton.disabled = true;
+  updateMonthHeader();
+  renderCalendar();
+  loadAvailability();
+}
+
 function selectDate(date, dateKey) {
   selectedDate = dateKey;
   formTitle.textContent = capitalize(dateFormatter.format(date));
@@ -118,8 +144,12 @@ function setStatus(message, type = "") {
 }
 
 async function loadAvailability({ silent = false } = {}) {
+  const requestId = ++loadRequestId;
+  const { start: monthStart, end: monthEnd } = getMonthBounds();
   if (!silent) setStatus("Загружаю отметки…");
   refreshButton.disabled = true;
+  previousMonthButton.disabled = true;
+  nextMonthButton.disabled = true;
 
   const start = toDateKey(monthStart);
   const end = toDateKey(monthEnd);
@@ -139,14 +169,21 @@ async function loadAvailability({ silent = false } = {}) {
     });
 
     if (!response.ok) throw new Error(await response.text());
-    availability = await response.json();
+    const result = await response.json();
+    if (requestId !== loadRequestId) return;
+    availability = result;
     renderCalendar();
     if (!silent) setStatus("Календарь обновлён.", "success");
   } catch (error) {
+    if (requestId !== loadRequestId) return;
     console.error(error);
     setStatus("Не удалось загрузить календарь. Проверьте настройку таблицы Supabase.", "error");
   } finally {
-    refreshButton.disabled = false;
+    if (requestId === loadRequestId) {
+      refreshButton.disabled = false;
+      previousMonthButton.disabled = false;
+      nextMonthButton.disabled = false;
+    }
   }
 }
 
@@ -186,7 +223,10 @@ form.addEventListener("submit", async (event) => {
 });
 
 refreshButton.addEventListener("click", () => loadAvailability());
+previousMonthButton.addEventListener("click", () => changeMonth(-1));
+nextMonthButton.addEventListener("click", () => changeMonth(1));
 window.setInterval(() => loadAvailability({ silent: true }), 15000);
 
+updateMonthHeader();
 renderCalendar();
 loadAvailability();

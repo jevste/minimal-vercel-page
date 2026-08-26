@@ -122,6 +122,29 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
+.calendar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.icon-button {
+  display: grid;
+  width: 2.55rem;
+  height: 2.55rem;
+  place-items: center;
+  border: 1px solid #cbd3cc;
+  border-radius: 50%;
+  color: #34463a;
+  background: transparent;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.icon-button:hover {
+  background: #edf2eb;
+}
+
 .ghost-button {
   border: 1px solid #cbd3cc;
   border-radius: 999px;
@@ -336,5 +359,13 @@ input:focus {
 
   .form-row {
     flex-direction: column;
+  }
+
+  .calendar-toolbar {
+    align-items: flex-end;
+  }
+
+  .ghost-button {
+    display: none;
   }
 }
