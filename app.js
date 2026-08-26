@@ -91,6 +91,12 @@ function renderCalendar() {
     button.append(number);
 
     if (names.length) {
+      const count = document.createElement("span");
+      count.className = "people-count";
+      count.textContent = names.length;
+      count.setAttribute("aria-hidden", "true");
+      button.append(count);
+
       const list = document.createElement("span");
       list.className = "people-list";
 
@@ -130,8 +136,11 @@ function changeMonth(offset) {
 
 function selectDate(date, dateKey) {
   selectedDate = dateKey;
+  const names = namesForDate(dateKey);
   formTitle.textContent = capitalize(dateFormatter.format(date));
-  selectedDateCopy.textContent = "Добавьте своё имя к этой дате.";
+  selectedDateCopy.textContent = names.length
+    ? `Уже свободны: ${names.join(", ")}. Добавьте своё имя.`
+    : "Пока никто не отметился. Добавьте своё имя.";
   submitButton.disabled = false;
   setStatus("");
   renderCalendar();
