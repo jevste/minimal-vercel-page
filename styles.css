@@ -115,7 +115,7 @@ h2 {
   display: grid;
   grid-template-columns: minmax(12rem, 0.55fr) minmax(20rem, 1.45fr);
   gap: clamp(1.25rem, 4vw, 3rem);
-  margin-top: 1rem;
+  margin-bottom: 1rem;
   padding: clamp(1.25rem, 3vw, 2rem);
 }
 
