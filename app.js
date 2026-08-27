@@ -7,6 +7,7 @@ let viewDate = new Date(now.getFullYear(), now.getMonth(), 1);
 
 const calendarGrid = document.querySelector("#calendar-grid");
 const calendarTitle = document.querySelector("#calendar-title");
+const topDaysList = document.querySelector("#top-days-list");
 const selectedDateCopy = document.querySelector("#selected-date-copy");
 const formTitle = document.querySelector("#form-title");
 const form = document.querySelector("#availability-form");
@@ -44,6 +45,71 @@ function toDateKey(date) {
 
 function namesForDate(dateKey) {
   return availability.filter((entry) => entry.available_on === dateKey).map((entry) => entry.name);
+}
+
+function dateFromKey(dateKey) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function peopleLabel(count) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (lastTwo >= 11 && lastTwo <= 14) return `${count} человек`;
+  if (last === 1) return `${count} человек`;
+  if (last >= 2 && last <= 4) return `${count} человека`;
+  return `${count} человек`;
+}
+
+function renderTopDays() {
+  topDaysList.replaceChildren();
+  const grouped = new Map();
+
+  availability.forEach((entry) => {
+    const names = grouped.get(entry.available_on) || [];
+    names.push(entry.name);
+    grouped.set(entry.available_on, names);
+  });
+
+  const topDays = [...grouped.entries()]
+    .sort(([dateA, namesA], [dateB, namesB]) => namesB.length - namesA.length || dateA.localeCompare(dateB))
+    .slice(0, 3);
+
+  if (!topDays.length) {
+    const empty = document.createElement("p");
+    empty.className = "top-days-empty";
+    empty.textContent = "В этом месяце пока нет отметок.";
+    topDaysList.append(empty);
+    return;
+  }
+
+  topDays.forEach(([dateKey, names], index) => {
+    const date = dateFromKey(dateKey);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "top-day";
+    button.setAttribute("aria-label", `${dateFormatter.format(date)}: ${peopleLabel(names.length)}`);
+
+    const rank = document.createElement("span");
+    rank.className = "top-day-rank";
+    rank.textContent = `№ ${index + 1}`;
+
+    const dateLabel = document.createElement("span");
+    dateLabel.className = "top-day-date";
+    dateLabel.textContent = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long" }).format(date);
+
+    const count = document.createElement("span");
+    count.className = "top-day-count";
+    count.textContent = peopleLabel(names.length);
+
+    const nameList = document.createElement("span");
+    nameList.className = "top-day-names";
+    nameList.textContent = names.join(", ");
+
+    button.append(rank, dateLabel, count, nameList);
+    button.addEventListener("click", () => selectDate(date, dateKey));
+    topDaysList.append(button);
+  });
 }
 
 function getMonthBounds() {
@@ -131,6 +197,7 @@ function changeMonth(offset) {
   submitButton.disabled = true;
   updateMonthHeader();
   renderCalendar();
+  renderTopDays();
   loadAvailability();
 }
 
@@ -182,6 +249,7 @@ async function loadAvailability({ silent = false } = {}) {
     if (requestId !== loadRequestId) return;
     availability = result;
     renderCalendar();
+    renderTopDays();
     if (!silent) setStatus("Календарь обновлён.", "success");
   } catch (error) {
     if (requestId !== loadRequestId) return;
@@ -238,4 +306,5 @@ window.setInterval(() => loadAvailability({ silent: true }), 5000);
 
 updateMonthHeader();
 renderCalendar();
+renderTopDays();
 loadAvailability();
